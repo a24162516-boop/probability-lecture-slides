@@ -135,12 +135,15 @@ def photo(slide, path, x, y, w, h, caption=None):
     return pic
 
 
-def movie(slide, name, x, y, w):
+def movie(slide, name, x, y, w, video=None, poster=None, hint="▶ 화면을 클릭하면 애니메이션 재생"):
+    """기본은 manim 애니메이션(ANIM/name.mp4), video/poster를 주면 그 파일 사용"""
     h = w * 9 / 16
-    slide.shapes.add_movie(str(ANIM / f"{name}.mp4"), Inches(x), Inches(y), Inches(w), Inches(h),
-                           poster_frame_image=str(ANIM / f"{name}_마지막장면.png"), mime_type="video/mp4")
+    video = video or ANIM / f"{name}.mp4"
+    poster = poster or ANIM / f"{name}_마지막장면.png"
+    slide.shapes.add_movie(str(video), Inches(x), Inches(y), Inches(w), Inches(h),
+                           poster_frame_image=str(poster), mime_type="video/mp4")
     box(slide, x, y, w, h, fill=None, line="line", lw=1)
-    text(slide, x, y + h + 0.03, w, 0.3, "▶ 화면을 클릭하면 애니메이션 재생", size=12, color="sub", align=PP_ALIGN.RIGHT)
+    text(slide, x, y + h + 0.03, w, 0.3, hint, size=12, color="sub", align=PP_ALIGN.RIGHT)
 
 
 def bullets(slide, x, y, w, h, items, size=22, gap=10):
@@ -178,10 +181,17 @@ s = new_slide(notes="1주차 도입. 지난 학기 순열(nPr)과 계승(n!)을 
 bg = s.background.fill
 bg.solid()
 bg.fore_color.rgb = C["ink"]
+s.shapes.add_picture(str(IMG / "생성_표지토큰.jpg"), 0, 0, prs.slide_width, prs.slide_height)
 text(s, 0.9, 2.2, 11, 0.5, "확률과 통계 · 1주차", size=22, color="cover_acc", bold=True)
 text(s, 0.9, 2.75, 11, 1.3, "여러 가지 순열", size=60, color="white", bold=True)
-text(s, 0.9, 4.1, 11, 0.6, "원순열 · 중복순열 · 같은 것이 있는 순열", size=24, color="cover_sub")
+text(s, 0.9, 4.1, 5.5, 1.0, "원순열 · 중복순열\n같은 것이 있는 순열", size=24, color="cover_sub")
 text(s, 0.9, 6.7, 11, 0.4, "근거: 미래엔 『확률과 통계』 Ⅰ. 경우의 수 – 1. 순열과 조합 (pp.10–16)", size=13, color="cover_sub")
+
+# 도입 영상 (Google Flow 생성)
+s = new_slide("도입 영상", "원탁에서 모두 일어났다 다시 앉으면?",
+              notes="영상 시청 후 질문: 모두 한 칸씩 옮겨 앉으면 이전과 다른 배치인가? 사람들의 상대적 위치(왼쪽·오른쪽 이웃)에 주목.\n영상: Google Flow(Veo 3.1 Lite)로 생성.")
+movie(s, None, 1.87, 1.4, 9.6, video=IMG / "생성_인트로영상.mp4", poster=IMG / "생성_인트로영상_포스터.jpg",
+      hint="▶ 화면을 클릭하면 영상 재생 (소리 있음)")
 
 # 2. 학습 흐름
 s = new_slide("오늘의 학습 흐름", notes="세 가지 순열을 일상 비유와 함께 미리 소개.")
@@ -237,6 +247,7 @@ bullets(s, 8.5, 2.25, 4.3, 4.5, [
     "묶음 안 자리 바꿈 2! = 2",
     ["이웃하는 경우 ", K("6 × 2 = 12")],
 ], size=19, gap=10)
+photo(s, IMG / "생성_원탁회의.jpg", 8.95, 5.0, 3.35, 1.88)
 
 # 6. 중복순열 도입
 s = new_slide("중복순열", "같은 것을 다시 뽑을 수 있는 배열", "미래엔 p.13",
@@ -262,6 +273,7 @@ text(s, 1.0, 3.45, 5.3, 2.0, [
     [("n", {"font": MATH, "bold": True}), "   각 자리에 올 수 있는 후보의 개수"],
     [("r", {"font": MATH, "bold": True}), "   자리의 개수 (n보다 커도 가능)"],
 ], size=16, spacing=1.2, space_after=8)
+photo(s, IMG / "생성_LED회로.jpg", 0.6, 5.65, 6.0, 1.3)
 slots = ["첫 번째", "두 번째", "세 번째", "⋯", "r 번째"]
 for i, sl in enumerate(slots):
     x = 7.1 + i * 1.12
@@ -296,6 +308,7 @@ bullets(s, 8.4, 2.35, 4.4, 4.0, [
     ["나머지 세 자리: ", SUB("4"), "Π", SUB("3"), " = 64"],
     ["전체 3 × 64 = ", K("192개")],
 ], size=20, gap=12)
+photo(s, IMG / "생성_도어락.jpg", 8.4, 4.65, 4.35, 2.25)
 
 # 9. 같은 것이 있는 순열 도입
 s = new_slide("같은 것이 있는 순열", "구별되지 않는 것이 섞인 배열", "미래엔 p.15",
@@ -320,7 +333,9 @@ text(s, 1.0, 3.4, 5.3, 1.6, [
     [("p!, q!", {"font": MATH, "bold": True}), "   같은 것끼리 자리 바꿈으로 생기는 중복"],
     [("조건", {"bold": True}), "   p + q + ⋯ + r = n"],
 ], size=16, spacing=1.2, space_after=6)
-bullets(s, 0.6, 5.4, 6.0, 1.4, [["a 3개, b 2개: 5! ÷ (3! × 2!) = ", K("10")]], size=20)
+text(s, 0.6, 5.4, 3.7, 1.4, [[("■  ", {"color": "blue", "size": 11}), "a 3개, b 2개의 순열"],
+                             ["     5! ÷ (3! × 2!) = ", K("10")]], size=19, spacing=1.25)
+photo(s, IMG / "생성_전신기사.jpg", 4.4, 5.3, 2.2, 1.55)
 label(s, 7.1, 1.5, 5.65, 0.5, "모스 부호: 점 1개, 선 2개를 전부 나열", fill="blue_soft", line=None, size=15, color="blue")
 for k, code in enumerate(["·−−", "−·−", "−−·"]):
     y = 2.3 + k * 0.95
@@ -388,6 +403,7 @@ bullets(s, 0.6, 1.6, 12.1, 4.5, [
     [("2번", {"bold": True}), "  4가지 색에서 3개를 택하는 중복순열 ", SUB("4"), "Π", SUB("3"), " = 4³ = ", K("64")],
     [("3번", {"bold": True}), "  같은 것이 있는 순열 6! ÷ (4! × 2!) = ", K("15"), "  (격자 최단 경로와 같은 구조)"],
 ], size=24, gap=18)
+photo(s, IMG / "생성_화이트보드.jpg", 3.67, 3.85, 6.0, 3.0)
 
 # 15. 이미지 출처
 s = new_slide("이미지 출처", notes="모든 사진은 Wikimedia Commons의 자유 라이선스 이미지. CC BY-SA 이미지는 같은 조건으로만 재배포 가능.")
@@ -399,8 +415,10 @@ for f in used:
     paras.append([(f.rsplit(".", 1)[0].replace("_", " "), {"bold": True}),
                   f"  {c['title'].removeprefix('File:')} · {c['author']} · {c['license']}"])
     paras.append([(c["source"], {"color": "sub", "size": 11})])
+paras.append([("AI 생성", {"bold": True}),
+              "  표지, 도입 영상, 원탁 회의, LED 회로, 도어락, 전신 기사, 화이트보드 · Google Flow (Nano Banana 2.1, Veo 3.1 Lite)로 생성"])
 text(s, 0.6, 1.5, 12.1, 5.4, paras, size=14, spacing=1.1, space_after=4)
-text(s, 0.6, 6.6, 12.1, 0.4, "출처: Wikimedia Commons", size=12, color="sub")
+text(s, 0.6, 6.6, 12.1, 0.4, "출처: Wikimedia Commons, Google Flow", size=12, color="sub")
 
 prs.save(OUT)
 print("saved", OUT, page_no, "slides")

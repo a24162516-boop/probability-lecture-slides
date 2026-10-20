@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>확률과 통계 강의</title>
+<meta name="description" content="대학교 1학년 공대생을 위한 확률과 통계 강의 슬라이드, 퀴즈, 플레이그라운드">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/common.css">
+<style>
+  .hero { background: var(--ink); color: #fff; }
+  .hero .in { max-width: 1120px; margin: 0 auto; padding: 56px 16px 48px; }
+  .hero .eyebrow { color: var(--cover-acc); font-weight: 700; }
+  .hero h1 { font-size: clamp(34px, 6vw, 56px); font-weight: 900; margin: 6px 0 10px; }
+  .hero p { color: #c6cede; font-size: 18px; }
+  .weeks { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 24px; }
+  .week { background: var(--card); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; }
+  .week img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+  .week .body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .week .chip { align-self: flex-start; }
+  .week h2 { font-size: 22px; font-weight: 900; }
+  .week p { color: var(--sub); font-size: 15px; }
+  .week .links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; padding-top: 8px; }
+  .week.soon { opacity: .55; }
+  .week.soon .ph { aspect-ratio: 16/9; background: var(--panel); display: grid; place-items: center; color: var(--sub); }
+  footer { color: var(--sub); font-size: 13px; margin-top: 40px; }
+</style>
+</head>
+<body>
+<header class="hero"><div class="in">
+  <div class="eyebrow">대학교 1학년 공과대학</div>
+  <h1>확률과 통계</h1>
+  <p>슬라이드로 배우고, 퀴즈로 확인하고, 플레이그라운드에서 직접 움직여 보는 강의</p>
+</div></header>
+<main class="wrap">
+  <div class="weeks">
+    <article class="week">
+      <img src="week01/media/cover.jpg" alt="원형과 일렬로 놓인 색깔 토큰">
+      <div class="body">
+        <span class="chip">1주차</span>
+        <h2>여러 가지 순열</h2>
+        <p>원순열 · 중복순열 · 같은 것이 있는 순열</p>
+        <div class="links">
+          <a class="btn" href="week01/">슬라이드</a>
+          <a class="btn ghost" href="week01/quiz.html">퀴즈</a>
+          <a class="btn ghost" href="week01/playground.html">플레이그라운드</a>
+        </div>
+      </div>
+    </article>
+    <article class="week soon">
+      <div class="ph">준비 중</div>
+      <div class="body">
+        <span class="chip">2주차</span>
+        <h2>다음 회차</h2>
+        <p>강의계획에 따라 추가 예정</p>
+      </div>
+    </article>
+  </div>
+  <footer>
+    근거 교재: 미래엔 『확률과 통계』 · 사진: Wikimedia Commons(자유 라이선스), Google Flow(AI 생성) · 애니메이션: manim<br>
+    소스: <a href="https://github.com/a24162516-boop/probability-lecture-slides">github.com/a24162516-boop/probability-lecture-slides</a>
+  </footer>
+</main>
+</body>
+</html>

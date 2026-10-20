@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1주차 퀴즈</title>
+<meta name="description" content="확률과 통계 1주차 여러 가지 순열 확인 퀴즈">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/common.css">
+<style>
+  .wrap { max-width: 760px; }
+  .progress { display: flex; gap: 6px; margin: 22px 0 18px; }
+  .progress i { flex: 1; height: 6px; border-radius: 6px; background: var(--line); }
+  .progress i.ok { background: var(--green); }
+  .progress i.no { background: var(--red); }
+  .progress i.now { background: var(--blue); }
+  .q { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 24px; }
+  .q .meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: var(--sub); font-size: 14px; }
+  .q h2 { font-size: 21px; font-weight: 700; margin: 12px 0 18px; line-height: 1.5; }
+  .opts { display: grid; gap: 10px; }
+  .opt { text-align: left; border: 2px solid var(--line); background: #fff; border-radius: 12px; padding: 12px 16px; font-size: 17px; }
+  .opt:hover:not(:disabled) { border-color: var(--blue); }
+  .opt.ok { border-color: var(--green); background: var(--green-soft); }
+  .opt.no { border-color: var(--red); background: var(--red-soft); }
+  .numrow { display: flex; gap: 10px; flex-wrap: wrap; }
+  .numrow input { flex: 1; min-width: 140px; font: inherit; font-size: 18px; padding: 10px 14px; border: 2px solid var(--line); border-radius: 12px; }
+  .numrow input:focus { outline: none; border-color: var(--blue); }
+  .fb { margin-top: 18px; border-radius: 12px; padding: 14px 16px; display: none; }
+  .fb.on { display: block; }
+  .fb.ok { background: var(--green-soft); }
+  .fb.no { background: var(--red-soft); }
+  .fb b { display: block; margin-bottom: 4px; }
+  .fb .why { color: var(--ink); line-height: 1.6; }
+  .nav { display: flex; justify-content: space-between; margin-top: 18px; gap: 10px; }
+  .result { text-align: center; padding: 36px 24px; }
+  .result .score { font-size: 64px; font-weight: 900; color: var(--blue); }
+  .result ul { text-align: left; margin: 20px auto 0; max-width: 520px; list-style: none; display: grid; gap: 8px; }
+  .result li { padding: 10px 14px; border-radius: 10px; background: var(--panel); font-size: 15px; }
+  .result li.no { background: var(--red-soft); }
+  .best { color: var(--sub); font-size: 14px; margin-top: 6px; }
+</style>
+</head>
+<body>
+<header class="topbar"><div class="in">
+  <a class="home" href="../">확률과 통계</a>
+  <nav>
+    <a href="./">슬라이드</a>
+    <a class="on" href="quiz.html">퀴즈</a>
+    <a href="playground.html">플레이그라운드</a>
+  </nav>
+</div></header>
+<main class="wrap">
+  <h1 class="page">1주차 확인 퀴즈</h1>
+  <p class="lead">여러 가지 순열 · 8문항 · 답을 고르면 바로 채점과 풀이 표시</p>
+  <div class="progress" id="progress"></div>
+  <div id="box"></div>
+</main>
+
+<script>
+const QUESTIONS = [
+  { topic: "원순열", type: "choice",
+    q: "서로 다른 5개의 구슬을 원형으로 배열하는 경우의 수는?",
+    opts: ["20", "24", "60", "120"], answer: "24",
+    why: "원순열의 수 (n − 1)! 에서 n = 5 → 4! = 24. 일렬 배열 5! = 120을 회전하여 겹치는 5가지로 나눈 값." },
+  { topic: "원순열", type: "number",
+    q: "7명이 원탁에 앉을 때, 특정한 2명이 서로 이웃하여 앉는 경우의 수는?",
+    answer: 240,
+    why: "2명을 한 묶음으로 보면 6개의 원순열 (6 − 1)! = 120, 묶음 안 자리 바꿈 2! = 2 → 120 × 2 = 240." },
+  { topic: "중복순열", type: "choice",
+    q: "₃Π₄ 의 값은?",
+    opts: ["12", "24", "64", "81"], answer: "81",
+    why: "ₙΠᵣ = nʳ 이므로 ₃Π₄ = 3⁴ = 81. 순열과 달리 r = 4가 n = 3보다 커도 가능." },
+  { topic: "중복순열", type: "number",
+    q: "숫자 0, 1, 2로 만들 수 있는 세 자리 자연수의 개수는? (같은 숫자 중복 사용 가능)",
+    answer: 18,
+    why: "백의 자리는 0 제외 2가지, 나머지 두 자리는 ₃Π₂ = 9가지 → 2 × 9 = 18." },
+  { topic: "중복순열", type: "choice",
+    q: "8비트로 나타낼 수 있는 서로 다른 신호의 개수는?",
+    opts: ["16", "64", "256", "512"], answer: "256",
+    why: "비트마다 0 또는 1의 2가지, 8자리 → ₂Π₈ = 2⁸ = 256." },
+  { topic: "같은 것이 있는 순열", type: "number",
+    q: "영어 단어 banana의 6개 문자를 일렬로 나열하는 경우의 수는?",
+    answer: 60,
+    why: "a 3개, n 2개, b 1개 → 6! ÷ (3! × 2! × 1!) = 720 ÷ 12 = 60." },
+  { topic: "같은 것이 있는 순열", type: "number",
+    q: "가로 3칸, 세로 3칸인 격자에서 왼쪽 아래 꼭짓점에서 오른쪽 위 꼭짓점까지 가는 최단 경로의 수는?",
+    answer: 20,
+    why: "오른쪽 a 3개, 위쪽 b 3개를 나열하는 순열 → 6! ÷ (3! × 3!) = 20." },
+  { topic: "개념 확인", type: "choice",
+    q: "다음 중 옳은 설명은?",
+    opts: ["원순열에서는 회전하여 일치하는 배열을 서로 다른 것으로 센다",
+           "중복순열 ₙΠᵣ에서 r은 n보다 클 수 없다",
+           "같은 것이 있는 순열은 모두 다르다고 보고 센 뒤 같은 것끼리의 자리 바꿈 수로 나눈다",
+           "원순열의 수는 n!이다"],
+    answer: "같은 것이 있는 순열은 모두 다르다고 보고 센 뒤 같은 것끼리의 자리 바꿈 수로 나눈다",
+    why: "원순열은 회전하여 일치하면 같은 것으로 세고 그 수는 (n − 1)!, 중복순열은 r > n도 가능." },
+];
+
+const $ = id => document.getElementById(id);
+const state = QUESTIONS.map(() => ({ done: false, ok: false, picked: null }));
+let cur = 0;
+
+function loadBest() { try { return Number(localStorage.getItem("w01-quiz-best")) || 0; } catch { return 0; } }
+function saveBest(v) { try { if (v > loadBest()) localStorage.setItem("w01-quiz-best", String(v)); } catch {} }
+
+function renderProgress() {
+  $("progress").innerHTML = QUESTIONS.map((_, i) => {
+    const s = state[i];
+    const c = s.done ? (s.ok ? "ok" : "no") : (i === cur ? "now" : "");
+    return `<i class="${c}" title="${i + 1}번"></i>`;
+  }).join("");
+}
+
+function grade(value) {
+  const Q = QUESTIONS[cur], s = state[cur];
+  if (s.done) return;
+  s.done = true;
+  s.picked = value;
+  s.ok = Q.type === "number" ? Number(value) === Q.answer : value === Q.answer;
+  render();
+}
+
+function render() {
+  renderProgress();
+  if (cur >= QUESTIONS.length) return renderResult();
+  const Q = QUESTIONS[cur], s = state[cur];
+  let body;
+  if (Q.type === "choice") {
+    body = `<div class="opts">${Q.opts.map(o => {
+      let c = "";
+      if (s.done && o === Q.answer) c = "ok";
+      else if (s.done && o === s.picked) c = "no";
+      return `<button class="opt ${c}" data-v="${o}" ${s.done ? "disabled" : ""}>${o}</button>`;
+    }).join("")}</div>`;
+  } else {
+    body = `<form class="numrow" id="numForm">
+      <input id="num" type="number" inputmode="numeric" placeholder="숫자로 답 입력" ${s.done ? `value="${s.picked}" disabled` : ""} required>
+      <button class="btn" ${s.done ? "disabled" : ""}>채점</button></form>`;
+  }
+  const fb = s.done
+    ? `<div class="fb on ${s.ok ? "ok" : "no"}"><b>${s.ok ? "정답" : `오답 · 정답 ${Q.answer}`}</b><div class="why">${Q.why}</div></div>`
+    : "";
+  $("box").innerHTML = `<div class="q">
+    <div class="meta"><span class="chip">${Q.topic}</span><span>${cur + 1} / ${QUESTIONS.length}</span></div>
+    <h2>${Q.q}</h2>${body}${fb}
+    <div class="nav">
+      <button class="btn ghost" id="back" ${cur === 0 ? "disabled" : ""}>이전</button>
+      <button class="btn" id="fwd" ${s.done ? "" : "disabled"}>${cur === QUESTIONS.length - 1 ? "결과 보기" : "다음"}</button>
+    </div></div>`;
+  $("box").querySelectorAll(".opt").forEach(b => b.onclick = () => grade(b.dataset.v));
+  const f = $("numForm");
+  if (f) f.onsubmit = e => { e.preventDefault(); grade($("num").value); };
+  if (f && !s.done) $("num").focus();
+  $("back").onclick = () => { cur--; render(); };
+  $("fwd").onclick = () => { cur++; render(); };
+}
+
+function renderResult() {
+  const score = state.filter(s => s.ok).length;
+  saveBest(score);
+  $("box").innerHTML = `<div class="q result">
+    <div>내 점수</div>
+    <div class="score">${score} / ${QUESTIONS.length}</div>
+    <div class="best">이 기기 최고 기록 ${loadBest()} / ${QUESTIONS.length}</div>
+    <ul>${QUESTIONS.map((Q, i) => `<li class="${state[i].ok ? "" : "no"}">${i + 1}. ${Q.topic} · ${state[i].ok ? "정답" : `오답 (정답 ${Q.answer})`}</li>`).join("")}</ul>
+    <div class="nav" style="justify-content:center;margin-top:24px">
+      <button class="btn ghost" id="retry">다시 풀기</button>
+      <a class="btn" href="playground.html">플레이그라운드로</a>
+    </div></div>`;
+  $("retry").onclick = () => { state.forEach(s => Object.assign(s, { done: false, ok: false, picked: null })); cur = 0; render(); };
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+/* 확률과 통계 강의 사이트 공통 스타일 */
+:root {
+  --ink: #1d2433;
+  --sub: #5b6475;
+  --line: #d5dae3;
+  --paper: #fbfbf8;
+  --card: #ffffff;
+  --panel: #f4f6fa;
+  --blue: #2f6fde;
+  --blue-soft: #dce8fb;
+  --red: #e0533d;
+  --red-soft: #fbe1dc;
+  --gold: #f2b632;
+  --gold-soft: #fdf0cf;
+  --green: #1f9d74;
+  --green-soft: #d8f1e8;
+  --cover-acc: #9fb8e8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--paper); color: var(--ink); }
+body { font-family: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; line-height: 1.5; }
+a { color: var(--blue); }
+button { font: inherit; cursor: pointer; }
+.math { font-family: Georgia, "Times New Roman", serif; }
+
+/* 상단 바 */
+.topbar { position: sticky; top: 0; z-index: 10; background: var(--ink); color: #fff; }
+.topbar .in { max-width: 1120px; margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.topbar .home { color: #fff; text-decoration: none; font-weight: 900; }
+.topbar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+.topbar nav a { color: #c6cede; text-decoration: none; padding: 6px 12px; border-radius: 99px; font-size: 15px; }
+.topbar nav a:hover { background: rgba(255,255,255,.1); }
+.topbar nav a.on { background: var(--blue); color: #fff; }
+
+.wrap { max-width: 1120px; margin: 0 auto; padding: 32px 16px 64px; }
+h1.page { font-size: clamp(28px, 4vw, 40px); font-weight: 900; letter-spacing: -0.5px; }
+p.lead { color: var(--sub); margin-top: 6px; font-size: 17px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 2px solid var(--blue); background: var(--blue); color: #fff; border-radius: 10px; padding: 8px 16px; font-weight: 700; text-decoration: none; }
+.btn.ghost { background: transparent; color: var(--blue); }
+.btn:disabled { opacity: .4; cursor: default; }
+.chip { display: inline-block; font-size: 13px; font-weight: 700; color: var(--blue); background: var(--blue-soft); padding: 3px 10px; border-radius: 99px; }

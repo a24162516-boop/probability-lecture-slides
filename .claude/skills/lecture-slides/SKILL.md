@@ -66,6 +66,18 @@ python -I -X utf8 SKILL/scripts/commons_fetch.py scripts/_cache/winca.pem script
 - 상표나 로고가 크게 보이는 제품 사진, 내부 분해 사진처럼 비유가 바로 읽히지 않는 사진은 제외
 - 고른 사진은 `--save 04_이미지/N주차` 옵션으로 다시 실행해 한글 파일명과 `출처.json`을 저장 (기존 출처.json에 추가됨)
 
+## 4-1. AI 생성 이미지·영상 (Google Flow, 사용자가 원할 때)
+
+Claude in Chrome으로 https://labs.google/fx/tools/flow 에 접속해 생성 (사용자의 Google 로그인 사용, 크레딧 소모).
+
+- 새 프로젝트 → 오른쪽 에이전트 창에 영어 프롬프트 입력 → 전송 버튼 클릭 (Enter로는 전송되지 않음)
+- 설정: 이미지 16:9 x1 (Nano Banana), 영상 16:9 x1 (Veo). 생성 전 크레딧 확인 창이 나오면 "승인"(항상 승인 말고)만 클릭
+- 프롬프트에 항상 "no text, no letters, no numbers, no logos" 포함 (AI가 글자를 깨뜨림)
+- 용도: 표지 배경(왼쪽 비운 남색 배경), 도입 영상 8초, 예제·정답 슬라이드의 빈 공간을 채우는 그림
+- 다운로드: 타일의 ⋮ → 다운로드 → 이미지 1K(원본) / 영상 720p(원본). 파일은 ~/Downloads 에 저장됨
+- 04_이미지/N주차/생성_이름.jpg|mp4 로 복사, 영상은 PyAV로 1초 지점 프레임을 `_포스터.jpg`로 저장해 PPT 미리보기에 사용
+- 출처 슬라이드에 "AI 생성 … Google Flow (모델명)로 생성" 한 줄 추가. 작업 후 만든 탭은 닫음
+
 ## 5. PPT 생성과 확인
 
 `scripts/build_w01_pptx.py`를 복사해 `build_wNN_pptx.py`를 만들고, `# ---------- 슬라이드` 아래 부분만 새로 작성. 경로 상수(`IMG`, `ANIM`, `OUT`)는 회차에 맞게 수정.
