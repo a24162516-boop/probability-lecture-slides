@@ -237,12 +237,16 @@ function el(tag, attrs = {}, text) {
   return e;
 }
 function tween(ms, step, done) {
+  // 화면 갱신(requestAnimationFrame)이 늦어져도 ms + 250 안에는 반드시 끝나도록 타이머로 마무리
   const t0 = performance.now();
+  let finished = false;
+  const end = () => { if (finished) return; finished = true; step(1); done && done(); };
   (function f(t) {
+    if (finished) return;
     const a = Math.min(1, (t - t0) / ms), e = a < 0.5 ? 2 * a * a : 1 - Math.pow(-2 * a + 2, 2) / 2;
-    step(e);
-    if (a < 1) requestAnimationFrame(f); else done && done();
+    if (a < 1) { step(e); requestAnimationFrame(f); } else end();
   })(t0);
+  setTimeout(end, ms + 250);
 }
 
 // 탭
@@ -252,12 +256,12 @@ document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => {
 });
 
 /* ① 원순열 */
-const circle = { n: 4, order: [], k: 0, seen: [], busy: false };
+const circle = { n: 4, order: [], k: 0, seen: [], busy: false, queued: 0 };
 const CX = 280, CY = 205, R = 150;
 function cInit() {
   circle.n = +$("cN").value; $("cNo").textContent = circle.n;
   circle.order = "ABCDEFGH".slice(0, circle.n).split("");
-  circle.k = 0; circle.seen = [];
+  circle.k = 0; circle.seen = []; circle.queued = 0;
   cDraw(0); cRecord();
   $("cLin").textContent = fmt(fact(circle.n));
   $("cRotN").textContent = circle.n;
@@ -295,10 +299,15 @@ function cRecord() {
     : `${circle.seen.length} / ${n}가지 수집 · 계속 회전해 보기`;
 }
 $("cN").oninput = cInit;
-$("cRot").onclick = () => {
-  if (circle.busy) return; circle.busy = true;
-  tween(650, e => cDraw(e), () => { circle.k++; cDraw(0); cRecord(); circle.busy = false; });
-};
+function cRotate() {
+  circle.busy = true;
+  tween(650, e => cDraw(e), () => {
+    circle.k++; cDraw(0); cRecord(); circle.busy = false;
+    if (circle.queued > 0) { circle.queued--; cRotate(); }
+  });
+}
+// 회전 중에 누른 클릭은 버리지 않고 차례로 처리
+$("cRot").onclick = () => { if (circle.busy) circle.queued++; else cRotate(); };
 $("cShuf").onclick = () => {
   const rest = circle.order.slice(1).sort(() => Math.random() - 0.5);
   circle.order = [circle.order[0], ...rest]; circle.k = 0; circle.seen = [];
